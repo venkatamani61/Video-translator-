@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Video Language Converter</title>
+    <style>
+        body { 
+            font-family: Arial; 
+            margin: 50px; 
+            background: #f3f3f3; 
+        }
+        .container {
+            background: #fff; padding: 20px; 
+            border-radius: 8px; 
+            width: 400px; 
+            margin: auto; 
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        input, select, button {
+            width: 100%; padding: 10px; margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>AI Video Language Converter</h2>
+
+    <form method="POST" enctype="multipart/form-data">
+        <label>Select Video:</label>
+        <input type="file" name="video" accept="video/*" required>
+
+        <label>Choose Language:</label>
+        <select name="language" required>
+            <option value="Telugu">Telugu</option>
+            <option value="Hindi">Hindi</option>
+            <option value="English">English</option>
+            <option value="Tamil">Tamil</option>
+        </select>
+
+        <button type="submit">Convert</button>
+    </form>
+
+    {% if output_video %}
+    <h3>Output Video:</h3>
+    <video width="350" controls>
+        <source src="{{ output_video }}">
+    </video>
+    {% endif %}
+</div>
+
+</body>
+</html>
