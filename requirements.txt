@@ -1,0 +1,4 @@
+Flask
+openai
+ffmpeg-python
+python-dotenv
