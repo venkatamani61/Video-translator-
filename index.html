@@ -25,27 +25,27 @@
 <div class="container">
     <h2>AI Video Language Converter</h2>
 
-    <form method="POST" enctype="multipart/form-data">
-        <label>Select Video:</label>
-        <input type="file" name="video" accept="video/*" required>
+    <form action="/translate" method="POST" enctype="multipart/form-data">
+    <label>Select Video:</label><br>
+    <input type="file" name="video" accept="video/*" required><br><br>
 
-        <label>Choose Language:</label>
-        <select name="language" required>
-            <option value="Telugu">Telugu</option>
-            <option value="Hindi">Hindi</option>
-            <option value="English">English</option>
-            <option value="Tamil">Tamil</option>
-        </select>
+    <label>Choose Language:</label><br>
+    <select name="language" required>
+        <option value="Telugu">Telugu</option>
+        <option value="Hindi">Hindi</option>
+        <option value="English">English</option>
+    </select><br><br>
 
-        <button type="submit">Convert</button>
-    </form>
+    <button type="submit">Convert</button>
+</form>
 
-    {% if output_video %}
+
+
     <h3>Output Video:</h3>
     <video width="350" controls>
         <source src="{{ output_video }}">
     </video>
-    {% endif %}
+
 </div>
 
 </body>
