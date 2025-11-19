@@ -22,7 +22,7 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 def home():
     return send_from_directory(".", "index.html")
 
-# Serve static files (css, js, images, etc.)
+# Serve static files
 @app.route("/<path:filename>")
 def static_files(filename):
     return send_from_directory(".", filename)
@@ -44,7 +44,7 @@ def translate():
         audio_path = input_path.replace(".mp4", ".wav")
         ffmpeg.input(input_path).output(audio_path).run(overwrite_output=True)
 
-        # Transcribe
+        # Transcribe audio
         with open(audio_path, "rb") as audio:
             transcript = client.audio.transcriptions.create(
                 model="whisper-1",
@@ -53,12 +53,12 @@ def translate():
 
         original_text = transcript.text
 
-        # Translate
+        # Translate text
         translation = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
-                {"role": "system", "content": "You translate subtitles."},
-                {"role": "user", "content": f"Translate this to {target_lang}: {original_text}"}
+                {"role": "system", "content": "Translate the text."},
+                {"role": "user", "content": f"Translate to {target_lang}: {original_text}"}
             ]
         )
 
@@ -76,17 +76,12 @@ def translate():
         with open(audio_out, "wb") as f:
             f.write(tts_audio.read())
 
-        # Combine video + new audio
+        # Merge video + dubbed audio (system command to avoid duplicate keyword issue)
         output_video = f"dubbed_{target_lang}_{filename}"
         output_path = os.path.join(OUTPUT_FOLDER, output_video)
 
-        ffmpeg.input(input_path).output(audio_out).output(
-            output_path,
-            vcodec="copy",
-            acodec="aac",
-            map="0:v:0",
-            map="1:a:0"
-        ).run(overwrite_output=True)
+        merge_cmd = f'ffmpeg -i "{input_path}" -i "{audio_out}" -map 0:v -map 1:a -c:v copy -c:a aac "{output_path}"'
+        os.system(merge_cmd)
 
         return jsonify({
             "status": "success",
@@ -97,7 +92,7 @@ def translate():
         return jsonify({"error": str(e)}), 500
 
 
-# Serve output files
+
 @app.route("/static/output/<path:filename>")
 def download_file(filename):
     return send_from_directory(OUTPUT_FOLDER, filename)
